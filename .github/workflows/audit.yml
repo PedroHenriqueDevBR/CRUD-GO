@@ -18,8 +18,8 @@ jobs:
         with:
           go-version: 1.20
       
-      - name: Install
-        run: go install
+      - name: Install fiber
+        run: go get github.com/gofiber/fiber/v2
 
       - name: Build
         run: go build -v ./...
