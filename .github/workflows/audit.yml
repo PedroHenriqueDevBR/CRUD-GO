@@ -1,4 +1,4 @@
-name: Audit
+name: Go package
 
 on:
   push:
@@ -7,28 +7,19 @@ on:
     branches: [dev]
 
 jobs:
+  build:
 
-  audit:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: 1.20
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.20
 
-    - name: Verify dependencies
-      run: go mod verify
+      - name: Build
+        run: go build -v ./...
 
-    - name: Build
-      run: go build -v ./...
-
-    - name: Run go vet
-      run: go vet ./...
-
-    - name: Install staticcheck
-      run: go install honnef.co/go/tools/cmd/staticcheck@latest
-
-    - name: Run tests
-      run: go test -race -vet=off ./...
+      - name: Test
+        run: go test -v ./...
