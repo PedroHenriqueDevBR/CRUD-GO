@@ -5,7 +5,7 @@ import (
 )
 
 func TestServer(t *testing.T) {
-	name := "serverino"
+	name := "server"
 	if name != "server" {
 		t.Fatalf("incorrect name")
 	}
