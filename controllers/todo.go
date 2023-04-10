@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -61,5 +62,32 @@ func CreateTodo(c *fiber.Ctx) error {
 		"data": fiber.Map{
 			"todo": todo,
 		},
+	})
+}
+
+func GetTodo(c *fiber.Ctx) error {
+	paramId := c.Params("id")
+	id, err := strconv.Atoi(paramId)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Cannot parse Id",
+		})
+	}
+
+	for _, todo := range savedTodos {
+		if todo.Id == id {
+			return c.Status(fiber.StatusOK).JSON(fiber.Map{
+				"success": true,
+				"data": fiber.Map{
+					"todo": todo,
+				},
+			})
+		}
+	}
+
+	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+		"success": false,
+		"message": "Not found",
 	})
 }
