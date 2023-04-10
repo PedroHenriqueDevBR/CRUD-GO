@@ -7,4 +7,5 @@ import (
 
 func TodoRoute(route fiber.Router) {
 	route.Get("", controllers.AlltTodos)
+	route.Post("", controllers.CreateTodo)
 }
