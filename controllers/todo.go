@@ -46,7 +46,7 @@ func CreateTodo(c *fiber.Ctx) error {
 		fmt.Println(err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"message": "Cannot parse JSON",
+			"message": "Error: Verify JS argumentON",
 		})
 	}
 
@@ -71,7 +71,7 @@ func GetTodo(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"success": false,
-			"message": "Cannot parse Id",
+			"message": "Error: Verify Id argument",
 		})
 	}
 
@@ -89,5 +89,63 @@ func GetTodo(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 		"success": false,
 		"message": "Not found",
+	})
+}
+
+func UpdateTodo(c *fiber.Ctx) error {
+	paramId := c.Params("id")
+	id, err := strconv.Atoi(paramId)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Error: Verify id argument",
+		})
+	}
+
+	type Request struct {
+		Title *string `json:"title"`
+		Done  *bool   `json:"done"`
+	}
+
+	var body Request
+	err = c.BodyParser(&body)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Error: Verify JS argumentON",
+		})
+	}
+
+	var todo *Todo
+
+	for _, t := range savedTodos {
+		if t.Id == id {
+			todo = t
+			break
+		}
+	}
+
+	if todo.Id == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"success": false,
+			"message": "Not found",
+		})
+	}
+
+	if body.Title != nil {
+		todo.Title = *body.Title
+	}
+
+	if body.Done != nil {
+		todo.Done = *body.Done
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"data": fiber.Map{
+			"todo": todo,
+		},
 	})
 }
