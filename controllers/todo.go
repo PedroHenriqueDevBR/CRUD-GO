@@ -149,3 +149,31 @@ func UpdateTodo(c *fiber.Ctx) error {
 		},
 	})
 }
+
+func DeleteTodo(c *fiber.Ctx) error {
+	paramId := c.Params("id")
+	id, err := strconv.Atoi(paramId)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Error: Verify id argument",
+		})
+	}
+
+	for i, todo := range savedTodos {
+		if todo.Id == id {
+			savedTodos = append(savedTodos[:i], savedTodos[i+1:]...)
+
+			return c.Status(fiber.StatusNoContent).JSON(fiber.Map{
+				"success": true,
+				"message": "Deleted Succesfully",
+			})
+		}
+	}
+
+	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+		"success": false,
+		"message": "Todo not found",
+	})
+}

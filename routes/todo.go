@@ -10,4 +10,5 @@ func TodoRoute(route fiber.Router) {
 	route.Post("", controllers.CreateTodo)
 	route.Get("/:id", controllers.GetTodo)
 	route.Put("/:id", controllers.UpdateTodo)
+	route.Delete("/:id", controllers.DeleteTodo)
 }
